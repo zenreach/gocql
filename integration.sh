@@ -6,6 +6,7 @@ function run_tests() {
 	local clusterSize=3
 	local version=$1
 	local auth=$2
+	local test_tags="$3"
 
 	if [ "$auth" = true ]; then
 		clusterSize=1
@@ -61,7 +62,7 @@ function run_tests() {
 
 	local args="-v -gocql.timeout=60s -runssl -proto=$proto -rf=3 -clusterSize=$clusterSize -autowait=2000ms -compressor=snappy -gocql.cversion=$version -cluster=$(ccm liveset) ./..."
 
-	go test -v -tags unit
+    go test -v -tags "${test_tags}"
 
 	if [ "$auth" = true ]
 	then
@@ -81,4 +82,4 @@ function run_tests() {
 	ccm remove
 }
 
-run_tests $1 $2
+run_tests $1 $2 $3

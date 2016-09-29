@@ -61,6 +61,10 @@ type ClusterConfig struct {
 	// via Discovery
 	HostFilter HostFilter
 
+	// AddressTranslator will translate addresses found on peer discovery and/or
+	// node change events.
+	AddressTranslator AddressTranslator
+
 	// If IgnorePeerAddr is true and the address in system.peers does not match
 	// the supplied host by either initial hosts or discovered via events then the
 	// host will be replaced with the supplied address.
@@ -123,6 +127,15 @@ func NewCluster(hosts ...string) *ClusterConfig {
 // session object that can be used to interact with the database.
 func (cfg *ClusterConfig) CreateSession() (*Session, error) {
 	return NewSession(*cfg)
+}
+
+// translateAddress is a helper method wthat ill use the given AddressTranslator
+// if defined, else it will no-op and return the address and port provided to it.
+func (cfg *ClusterConfig) translateAddress(addr string, port int) (string, int) {
+	if cfg.AddressTranslator == nil {
+		return addr, port
+	}
+	return cfg.AddressTranslator.Translate(addr, port)
 }
 
 var (

@@ -133,6 +133,9 @@ func (s *Session) handleNodeEvent(frames []frame) {
 		// TODO: can we be sure the order of events in the buffer is correct?
 		switch f := frame.(type) {
 		case *topologyChangeEventFrame:
+			host, port := s.cfg.translateAddress(f.host.String(), f.port)
+			f.host = net.ParseIP(host)
+			f.port = port
 			event, ok := events[f.host.String()]
 			if !ok {
 				event = &nodeEvent{change: f.change, host: f.host, port: f.port}
@@ -141,6 +144,9 @@ func (s *Session) handleNodeEvent(frames []frame) {
 			event.change = f.change
 
 		case *statusChangeEventFrame:
+			host, port := s.cfg.translateAddress(f.host.String(), f.port)
+			f.host = net.ParseIP(host)
+			f.port = port
 			event, ok := events[f.host.String()]
 			if !ok {
 				event = &nodeEvent{change: f.change, host: f.host, port: f.port}
@@ -209,7 +215,6 @@ func (s *Session) handleNewNode(host net.IP, port int, waitForBinary bool) {
 	s.pool.addHost(hostInfo)
 	s.policy.AddHost(hostInfo)
 	hostInfo.setState(NodeUp)
-
 	if s.control != nil && !s.cfg.IgnorePeerAddr {
 		s.hostSource.refreshRing()
 	}
