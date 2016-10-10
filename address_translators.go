@@ -11,18 +11,18 @@ import (
 // when possible.
 type AddressTranslator interface {
 	// Translate will translate the provided address and/or port when a host is discovered.
-	Translate(addr string, port int) (string, int)
+	Translate(addr net.IP, port int) (net.IP, int)
 }
 
-type AddressTranslatorFunc func(addr string, port int) (string, int)
+type AddressTranslatorFunc func(addr net.IP, port int) (net.IP, int)
 
-func (fn AddressTranslatorFunc) Translate(addr string, port int) (string, int) {
+func (fn AddressTranslatorFunc) Translate(addr net.IP, port int) (net.IP, int) {
 	return fn(addr, port)
 }
 
 // IdentityTranslator will do nothing but return what it was provided. It is essentially a no-op.
 func IdentityTranslator() AddressTranslator {
-	return AddressTranslatorFunc(func(addr string, port int) (string, int) {
+	return AddressTranslatorFunc(func(addr net.IP, port int) (net.IP, int) {
 		return addr, port
 	})
 }
@@ -33,8 +33,8 @@ func IdentityTranslator() AddressTranslator {
 // the given address is returned. Port is always returned unchanged. Build with the
 // gocql_debug tag to see the address translation at work.
 func EC2MultiRegionAddressTranslator() AddressTranslator {
-	return AddressTranslatorFunc(func(addr string, port int) (string, int) {
-		hosts, err := net.LookupAddr(addr)
+	return AddressTranslatorFunc(func(addr net.IP, port int) (net.IP, int) {
+		hosts, err := net.LookupAddr(addr.String())
 
 		if err != nil || len(hosts) < 1 {
 			return addr, port
@@ -45,9 +45,14 @@ func EC2MultiRegionAddressTranslator() AddressTranslator {
 			return addr, port
 		}
 
-		if gocqlDebug {
-			log.Printf("gocql: translated ec2 address from '%s' to '%s'\n", addr, addresses[0])
+		newAddr := net.ParseIP(addresses[0])
+		if newAddr == nil {
+			return addr, port
 		}
-		return addresses[0], port
+
+		if gocqlDebug {
+			log.Printf("gocql: translated ec2 address from '%s' to '%s'\n", newAddr.String(), addresses[0])
+		}
+		return newAddr, port
 	})
 }

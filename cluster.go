@@ -7,6 +7,7 @@ package gocql
 import (
 	"errors"
 	"time"
+	"net"
 )
 
 // PoolConfig configures the connection pool used by the driver, it defaults to
@@ -131,7 +132,7 @@ func (cfg *ClusterConfig) CreateSession() (*Session, error) {
 
 // translateAddress is a helper method that will use the given AddressTranslator
 // if defined, else it will no-op and return the address and port provided to it.
-func (cfg *ClusterConfig) translateAddress(addr string, port int) (string, int) {
+func (cfg *ClusterConfig) translateAddress(addr net.IP, port int) (net.IP, int) {
 	if cfg.AddressTranslator == nil {
 		return addr, port
 	}

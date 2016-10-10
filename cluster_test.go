@@ -3,6 +3,7 @@ package gocql
 import (
 	"testing"
 	"time"
+	"net"
 )
 
 func TestNewCluster_Defaults(t *testing.T) {
@@ -31,15 +32,15 @@ func TestNewCluster_WithHosts(t *testing.T) {
 func TestClusterConfig_translate_NilTranslator(t *testing.T) {
 	cfg := NewCluster()
 	assertNil(t, "cluster config address translator", cfg.AddressTranslator)
-	host, port := cfg.translateAddress("10.0.0.1", 1234)
-	assertEqual(t, "translated host", "10.0.0.1", host)
+	host, port := cfg.translateAddress(net.ParseIP("10.0.0.1"), 1234)
+	assertEqual(t, "translated address", "10.0.0.1", host.String())
 	assertEqual(t, "translated port", 1234, port)
 }
 
 func TestClusterConfig_translate_WithTranslator(t *testing.T) {
 	cfg := NewCluster()
-	cfg.AddressTranslator = staticAddressTranslator("translated.ip", 5432)
-	host, port := cfg.translateAddress("10.0.0.1", 1234)
-	assertEqual(t, "translated host", "translated.ip", host)
+	cfg.AddressTranslator = staticAddressTranslator(net.ParseIP("10.10.10.10"), 5432)
+	addr, port := cfg.translateAddress(net.ParseIP("10.0.0.1"), 1234)
+	assertEqual(t, "translated address", "10.10.10.10", addr.String())
 	assertEqual(t, "translated port", 5432, port)
 }

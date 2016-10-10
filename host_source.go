@@ -318,7 +318,9 @@ func (r *ringDescriber) GetHosts() (hosts []*HostInfo, partitioner string, err e
 			return nil, "", err
 		}
 
-		localHost.peer, localHost.port = r.session.cfg.translateAddress(localHost.peer, localHost.port)
+		var newPeer net.IP
+		newPeer, localHost.port = r.session.cfg.translateAddress(net.ParseIP(localHost.peer), localHost.port)
+		localHost.peer = newPeer.String()
 	} else {
 		iter := r.session.control.query(legacyLocalQuery)
 		if iter == nil {
@@ -358,7 +360,9 @@ func (r *ringDescriber) GetHosts() (hosts []*HostInfo, partitioner string, err e
 			continue
 		}
 
-		host.peer, host.port = r.session.cfg.translateAddress(host.peer, host.port)
+		var newPeer net.IP
+		newPeer, host.port = r.session.cfg.translateAddress(net.ParseIP(host.peer), host.port)
+		host.peer = newPeer.String()
 
 		if r.matchFilter(host) {
 			hosts = append(hosts, host)
