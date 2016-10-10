@@ -37,6 +37,7 @@ func TestHandleNodeEvent_TopicChange_TranslatesAddress(t *testing.T) {
 	defer (func (d time.Duration) { nodeUpDelayDuration = d })(nodeUpDelayDuration)
 	nodeUpDelayDuration = 0
 	session := createTestSession()
+	defer session.Close()
 	session.cfg.AddressTranslator = staticAddressTranslator("127.10.10.220", 5432)
 	assertEqual(t, "ring host length", 0, len(session.ring.hostList))
 
@@ -63,6 +64,7 @@ func TestHandleNodeEvent_StatusChange_TranslatesAddress(t *testing.T) {
 	defer (func (d time.Duration) { nodeUpDelayDuration = d })(nodeUpDelayDuration)
 	nodeUpDelayDuration = 0
 	session := createTestSession()
+	defer session.Close()
 	session.cfg.AddressTranslator = staticAddressTranslator("127.10.10.220", 5432)
 	assertEqual(t, "ring host length", 0, len(session.ring.hostList))
 

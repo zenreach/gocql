@@ -129,7 +129,7 @@ func (cfg *ClusterConfig) CreateSession() (*Session, error) {
 	return NewSession(*cfg)
 }
 
-// translateAddress is a helper method wthat ill use the given AddressTranslator
+// translateAddress is a helper method that will use the given AddressTranslator
 // if defined, else it will no-op and return the address and port provided to it.
 func (cfg *ClusterConfig) translateAddress(addr string, port int) (string, int) {
 	if cfg.AddressTranslator == nil {
