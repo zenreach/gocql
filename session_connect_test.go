@@ -8,7 +8,7 @@ import (
 )
 
 func setupTestTcpServer(t *testing.T) (net.Listener, net.IP, int) {
-	srvr, err := net.Listen("tcp", ":0")
+	srvr, err := net.Listen("tcp4", "0.0.0.0:0")
 	assertNil(t, "error when creating tcp server", err)
 	testHost, testPort, err := parseIPPort(srvr.Addr().String())
 	log.Printf("using host=%s and port=%d for test tcp server (err=%v)", testHost.String(), testPort, err)
