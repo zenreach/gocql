@@ -155,6 +155,10 @@ func createTestSession() *Session {
 	config.PoolConfig.HostSelectionPolicy = RoundRobinHostPolicy()
 	session := &Session{
 		cfg:    *config,
+		connCfg: &ConnConfig{
+			Timeout: 10*time.Millisecond,
+			Keepalive: 0,
+		},
 		policy: config.PoolConfig.HostSelectionPolicy,
 	}
 	session.pool = config.PoolConfig.buildPool(session)

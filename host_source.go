@@ -26,10 +26,6 @@ const (
 	NodeDown
 )
 
-var (
-	nodeUpDelayDuration time.Duration = 10 * time.Second
-)
-
 type cassVersion struct {
 	Major, Minor, Patch int
 }
@@ -97,7 +93,7 @@ func (c cassVersion) nodeUpDelay() time.Duration {
 		return 0
 	}
 
-	return nodeUpDelayDuration
+	return 10 * time.Second
 }
 
 type HostInfo struct {
@@ -317,10 +313,6 @@ func (r *ringDescriber) GetHosts() (hosts []*HostInfo, partitioner string, err e
 		if err = iter.Close(); err != nil {
 			return nil, "", err
 		}
-
-		var newPeer net.IP
-		newPeer, localHost.port = r.session.cfg.translateAddress(net.ParseIP(localHost.peer), localHost.port)
-		localHost.peer = newPeer.String()
 	} else {
 		iter := r.session.control.query(legacyLocalQuery)
 		if iter == nil {
@@ -359,10 +351,6 @@ func (r *ringDescriber) GetHosts() (hosts []*HostInfo, partitioner string, err e
 			log.Println(err)
 			continue
 		}
-
-		var newPeer net.IP
-		newPeer, host.port = r.session.cfg.translateAddress(net.ParseIP(host.peer), host.port)
-		host.peer = newPeer.String()
 
 		if r.matchFilter(host) {
 			hosts = append(hosts, host)

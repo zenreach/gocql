@@ -477,6 +477,7 @@ func (pool *hostConnPool) connect() (err error) {
 	// try to connect
 	var conn *Conn
 	for i := 0; i < maxAttempts; i++ {
+		// TODO (gus) use translated address here
 		conn, err = pool.session.connect(pool.addr, pool, pool.host)
 		if err == nil {
 			break
