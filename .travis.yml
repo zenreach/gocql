@@ -28,11 +28,6 @@ go:
   - 1.6
   - 1.7
 
-# hostname setup for ec2_test
-before_install:
-  - sudo chmod uga+w /etc/hosts
-  - sudo echo -e "\n10.10.220.253\tec2.test.host.gocql\n10.10.220.254\tec2.test.host.gocql\n" >> /etc/hosts
-
 install:
   - pip install --user cql PyYAML six
   - git clone https://github.com/pcmanus/ccm.git
@@ -43,7 +38,7 @@ install:
 
 script:
   - set -e
-  - PATH=$PATH:$HOME/.local/bin bash integration.sh $CASS $AUTH ec2_test
+  - PATH=$PATH:$HOME/.local/bin bash integration.sh $CASS $AUTH
   - go vet .
 
 notifications:
