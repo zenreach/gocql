@@ -57,7 +57,7 @@ func TestSession_connect_WithNoTranslator(t *testing.T) {
 		port: testPort,
 	})
 
-	assertConnectionEventually(t, 100*time.Millisecond, tchan)
+	assertConnectionEventually(t, 500*time.Millisecond, tchan)
 }
 
 func TestSession_connect_WithTranslator(t *testing.T) {
@@ -78,5 +78,5 @@ func TestSession_connect_WithTranslator(t *testing.T) {
 		port: 5432,
 	})
 
-	assertConnectionEventually(t, 100*time.Millisecond, tchan)
+	assertConnectionEventually(t, 500*time.Millisecond, tchan)
 }
