@@ -21,9 +21,9 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/gocql/gocql/internal/lru"
+	"github.com/zenreach/gocql/internal/lru"
 
-	"github.com/gocql/gocql/internal/streams"
+	"github.com/zenreach/gocql/internal/streams"
 )
 
 var (

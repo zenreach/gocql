@@ -61,7 +61,7 @@ function run_tests() {
 
 	local args="-v -gocql.timeout=60s -runssl -proto=$proto -rf=3 -clusterSize=$clusterSize -autowait=2000ms -compressor=snappy -gocql.cversion=$version -cluster=$(ccm liveset) ./..."
 
-	go test -v -tags unit
+    go test -v -tags unit
 
 	if [ "$auth" = true ]
 	then

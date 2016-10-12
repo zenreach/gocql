@@ -147,7 +147,7 @@ func TestUDT_Reflect(t *testing.T) {
 	}
 
 	if *retrievedHorse != *insertedHorse {
-		t.Fatal("exepcted to get %+v got %+v", insertedHorse, retrievedHorse)
+		t.Fatal("expected to get %+v got %+v", insertedHorse, retrievedHorse)
 	}
 }
 
